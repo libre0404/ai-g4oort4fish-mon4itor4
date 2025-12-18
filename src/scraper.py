@@ -10,6 +10,8 @@ from playwright.async_api import (
     TimeoutError as PlaywrightTimeoutError,
     async_playwright,
 )
+from .stealth_helper import StealthManager  # ← 添加这行
+
 
 from src.ai_handler import (
     download_all_images,
@@ -43,13 +45,14 @@ from src.utils import (
 )
 
 
-async def scrape_user_profile(context, user_id: str) -> dict:
-    """
-    【新版】访问指定用户的个人主页，按顺序采集其摘要信息、完整的商品列表和完整的评价列表。
-    """
-    print(f"   -> 开始采集用户ID: {user_id} 的完整信息...")
-    profile_data = {}
-    page = await context.new_page()
+    async def scrape_user_profile(context, user_id: str) -> dict:
+      print(f"   -> 开始采集用户ID: {user_id} 的完整信息...")
+      profile_data = {}
+      # 【第 2 处】改这行
+      page = await context.new_page(**StealthManager.get_context_config())
+      # 【第 3 处】添加这行
+      await StealthManager.apply_stealth_async(page)
+
 
     # 为各项异步任务准备Future和数据容器
     head_api_future = asyncio.get_event_loop().create_future()
@@ -175,16 +178,39 @@ async def scrape_xianyu(task_config: dict, debug_limit: int = 0):
         print(f"LOG: 输出文件 {output_filename} 不存在，将创建新文件。")
 
     async with async_playwright() as p:
-        if LOGIN_IS_EDGE:
-            browser = await p.chromium.launch(headless=RUN_HEADLESS, channel="msedge")
+    if LOGIN_IS_EDGE:
+        # 【第 4 处】改这行 - 添加 StealthManager 配置
+        browser = await p.chromium.launch(
+            headless=RUN_HEADLESS,
+            channel="msedge",
+            **StealthManager.get_launch_config(headless=RUN_HEADLESS)
+        )
+    else:
+        if RUNNING_IN_DOCKER:
+            # 【第 5 处】改这行
+            browser = await p.chromium.launch(
+                headless=RUN_HEADLESS,
+                **StealthManager.get_launch_config(headless=RUN_HEADLESS)
+            )
         else:
-            # Docker环境内，使用Playwright自带的chromium；本地环境，使用系统安装的Chrome
-            if RUNNING_IN_DOCKER:
-                browser = await p.chromium.launch(headless=RUN_HEADLESS)
-            else:
-                browser = await p.chromium.launch(headless=RUN_HEADLESS, channel="chrome")
-        context = await browser.new_context(storage_state=STATE_FILE, user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3")
-        page = await context.new_page()
+            # 【第 6 处】改这行
+            browser = await p.chromium.launch(
+                headless=RUN_HEADLESS,
+                channel="chrome",
+                **StealthManager.get_launch_config(headless=RUN_HEADLESS)
+            )
+
+        # 【第 7 处】改这行 - 添加 StealthManager 配置
+        context = await browser.new_context(
+          storage_state=STATE_FILE,
+          user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+          **StealthManager.get_context_config()  # ← 添加这个
+        )
+
+        # 【第 8 处】改这行
+        page = await context.new_page(**StealthManager.get_context_config())
+        # 【第 9 处】添加这行 - 应用异步 Stealth
+        await StealthManager.apply_stealth_async(page)
 
         try:
             log_time("步骤 1 - 直接导航到搜索结果页...")
@@ -330,7 +356,8 @@ async def scrape_xianyu(task_config: dict, debug_limit: int = 0):
                     # --- 修改: 访问详情页前的等待时间，模拟用户在列表页上看了一会儿 ---
                     await random_sleep(3, 6) # 原来是 (2, 4)
 
-                    detail_page = await context.new_page()
+                    detail_page = await context.new_page(**StealthManager.get_context_config())
+                    await StealthManager.apply_stealth_async(detail_page)
                     try:
                         async with detail_page.expect_response(lambda r: DETAIL_API_URL_PATTERN in r.url, timeout=25000) as detail_info:
                             await detail_page.goto(item_data["商品链接"], wait_until="domcontentloaded", timeout=25000)
