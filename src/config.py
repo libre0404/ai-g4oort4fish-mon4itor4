@@ -4,6 +4,20 @@ import sys
 from dotenv import load_dotenv
 from openai import AsyncOpenAI
 
+import random
+from src.optimization import DelayConfig, UserAgentManager
+
+# 初始化 UA 管理器
+ua_manager = UserAgentManager()
+
+def get_random_user_agent():
+    """获取随机User-Agent"""
+    return ua_manager.get_random_ua()
+
+def get_next_user_agent():
+    """轮转获取User-Agent"""
+    return ua_manager.get_next_ua()
+    
 # --- AI & Notification Configuration ---
 load_dotenv()
 
@@ -48,6 +62,21 @@ ENABLE_THINKING = os.getenv("ENABLE_THINKING", "false").lower() == "true"
 ENABLE_RESPONSE_FORMAT = os.getenv("ENABLE_RESPONSE_FORMAT", "true").lower() == "true"
 
 # --- Headers ---
+def get_image_download_headers():
+    """
+    动态生成图片下载请求头 - 每次都随机
+    
+    这个函数会在每次调用时生成新的User-Agent，
+    确保每次请求都不同，规避反爬虫检测
+    """
+    return {
+        'User-Agent': get_random_user_agent(),  # ← 每次都随机!
+        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+    }
+
 IMAGE_DOWNLOAD_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0',
     'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
