@@ -26,6 +26,10 @@ ENV PATH="/opt/venv/bin:$PATH"
 ENV PYTHONUNBUFFERED=1
 # 新增环境变量，用于区分Docker环境和本地环境
 ENV RUNNING_IN_DOCKER=true
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONIOENCODING=utf-8
+ENV PYTHONUTF8=1
+
 # 告知 Playwright 在哪里找到浏览器
 ENV PLAYWRIGHT_BROWSERS_PATH=/root/.cache/ms-playwright
 
