@@ -9,6 +9,9 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    environment:
+    - RUNNING_IN_DOCKER=true
+    - PYTHONUNBUFFERED=1
     volumes:
       - .:/app
     restart: unless-stopped
