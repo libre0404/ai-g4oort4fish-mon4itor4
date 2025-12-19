@@ -4,7 +4,8 @@
 统一管理 Playwright 的 Stealth 配置，避免被网站轻易识别为自动化脚本。
 支持：
 - get_launch_config：浏览器启动参数
-- get_context_config：上下文参数
+- get_context_config：browser.new_context(...) 用的上下文参数
+- get_page_config：context.new_page(...) 用的参数（目前为空，避免不支持的字段）
 - apply_stealth_async：异步模式下对 Page 应用 Stealth
 - apply_stealth_sync：同步模式下对 Page 应用 Stealth
 """
@@ -36,12 +37,23 @@ class StealthManager:
     def get_context_config() -> Dict[str, Any]:
         """
         browser.new_context(...) 时的隐身配置。
+        只能放 context 支持的字段，比如 locale / timezone_id / viewport 等。
         """
         return {
             "locale": "zh-CN",
             "timezone_id": "Asia/Shanghai",
             "viewport": {"width": 1280, "height": 720},
         }
+
+    @staticmethod
+    def get_page_config() -> Dict[str, Any]:
+        """
+        context.new_page(...) 用的参数。
+        这里不要带 locale / timezone_id 这类只属于 context 的字段，
+        否则会出现 BrowserContext.new_page() got an unexpected keyword argument ...
+        当前先返回空字典，需要的话后面可以加 user_agent 等。
+        """
+        return {}
 
     # ----------------- 异步版：在 scraper.py 里用 -----------------
 
@@ -52,7 +64,6 @@ class StealthManager:
         在 scraper.py / login.py 里这样用：
             await StealthManager.apply_stealth_async(page)
         """
-        # 删除 webdriver 痕迹
         await page.add_init_script(
             """
             Object.defineProperty(navigator, 'webdriver', {
@@ -60,7 +71,6 @@ class StealthManager:
             });
             """
         )
-        # 可以视情况继续扩展更多指纹伪装，这里先保持简单稳定
 
     # ----------------- 同步版：在测试脚本中用 -----------------
 
@@ -68,10 +78,10 @@ class StealthManager:
     def apply_stealth_sync(page: SyncPage) -> None:
         """
         在同步 Playwright 环境中，对 Page 应用 Stealth。
-        例如你刚才的测试脚本：
+        例如：
             with sync_playwright() as p:
                 browser = p.chromium.launch(**StealthManager.get_launch_config())
-                page = browser.new_page(**StealthManager.get_context_config())
+                page = browser.new_page(**StealthManager.get_page_config())
                 StealthManager.apply_stealth_sync(page)
         """
         page.add_init_script(
