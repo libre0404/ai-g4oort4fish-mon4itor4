@@ -76,4 +76,8 @@ class StealthManager:
         """
         page.add_init_script(
             """
-            Object.defineProperty(navigator, '
+            Object.defineProperty(navigator, 'webdriver', {
+                get: () => undefined,
+            });
+            """
+        )
