@@ -244,19 +244,77 @@ class UserAgentManager:
 
 class IPBlockerDetector:
     """检测和应对IP被黑名单/验证码的情况"""
-    
+
     BLOCKER_KEYWORDS = {
         "验证码": ["验证", "验证码", "baxia", "middleware", "slide", "滑块", "拖动", "captcha"],
         "IP被封": ["访问异常", "访问频繁", "请稍候", "被限制", "429", "too many requests", "rate limit"],
         "账户异常": ["异常", "安全", "已禁用", "用户异常", "账号", "风险"],
         "登录要求": ["请登录", "需要登录", "sign in", "login required"],
     }
-    
+
     def __init__(self, max_consecutive_fails: int = 3):
         self.consecutive_fails = 0
         self.max_consecutive_fails = max_consecutive_fails
         self.total_blocks = 0
         self.block_history = []  # 记录被封禁的时间
         self.last_block_time = None
-    
-    async def check
+
+    async def check(self, text: str = "") -> bool:
+        """
+        检查页面文本 / 提示信息中是否包含封禁或验证码相关关键词
+
+        Args:
+            text: 要检查的文本内容
+
+        Returns:
+            bool: 是否检测到封禁/验证码提示
+        """
+        if not text:
+            return False
+
+        text_lower = text.lower()
+        detected = False
+
+        for category, keywords in self.BLOCKER_KEYWORDS.items():
+            for kw in keywords:
+                if kw.lower() in text_lower:
+                    detected = True
+                    self.consecutive_fails += 1
+                    self.total_blocks += 1
+                    self.last_block_time = datetime.now()
+                    self.block_history.append(self.last_block_time)
+                    print(f"[IP检测] 触发关键词类别: {category}，关键字: {kw}")
+                    break
+            if detected:
+                break
+
+        if detected and self.consecutive_fails >= self.max_consecutive_fails:
+            print("[IP检测] 连续封禁次数过多，建议更换IP或暂停任务一段时间。")
+
+        return detected
+
+    def reset_fails(self):
+        """重置连续失败计数"""
+        if self.consecutive_fails > 0:
+            print(f"[IP检测] 重置连续失败计数（原值: {self.consecutive_fails}）")
+        self.consecutive_fails = 0
+
+    async def handle_blocked(self):
+        """
+        处理被封禁的情况：记录时间、增加计数，并进行保护性等待
+        """
+        self.consecutive_fails += 1
+        self.total_blocks += 1
+        self.last_block_time = datetime.now()
+        self.block_history.append(self.last_block_time)
+
+        print("\n" + "=" * 60)
+        print("【IP检测】检测到封禁/验证码，启动保护性延迟...")
+        print(f"当前连续封禁次数: {self.consecutive_fails}")
+        print(f"累计封禁次数: {self.total_blocks}")
+
+        # 使用错误恢复延迟，避免继续高频请求
+        await DelayConfig.smart_delay("error_recovery", verbose=True)
+        print("=" * 60 + "\n")
+
+# 文件结尾到此即可，不需要再添加其它代码
