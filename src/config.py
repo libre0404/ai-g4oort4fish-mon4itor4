@@ -214,100 +214,103 @@ MAC_MODELS_DATABASE = {
     "MacBook Pro": {
         # M4 系列 (2024)
         "M4 Max": {
-            "release_year": 2024, 
-            "typical_price_range": (18000, 32000), 
+            "release_year": 2024,
+            "typical_price_range": (18000, 32000),
             "video_editing_score": 100,
             "recommended_for": "专业4K/8K视频剪辑、多轨调色",
-            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"],
         },
         "M4 Pro": {
-            "release_year": 2024, 
-            "typical_price_range": (12000, 20000), 
+            "release_year": 2024,
+            "typical_price_range": (12000, 20000),
             "video_editing_score": 95,
             "recommended_for": "4K视频剪辑、多机位剪辑",
-            "software_support": ["Final Cut Pro", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "Premiere Pro"],
         },
         "M4": {
-            "release_year": 2024, 
-            "typical_price_range": (10000, 16000), 
+            "release_year": 2024,
+            "typical_price_range": (10000, 16000),
             "video_editing_score": 90,
             "recommended_for": "1080p/4K基础剪辑",
-            "software_support": ["Final Cut Pro", "iMovie", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "iMovie", "Premiere Pro"],
         },
-        
+
         # M3 系列 (2023)
         "M3 Max": {
-            "release_year": 2023, 
-            "typical_price_range": (16000, 28000), 
+            "release_year": 2023,
+            "typical_price_range": (16000, 28000),
             "video_editing_score": 98,
             "recommended_for": "专业4K视频剪辑、调色",
-            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"],
         },
         "M3 Pro": {
-            "release_year": 2023, 
-            "typical_price_range": (11000, 17000), 
+            "release_year": 2023,
+            "typical_price_range": (11000, 17000),
             "video_editing_score": 93,
             "recommended_for": "4K视频剪辑",
-            "software_support": ["Final Cut Pro", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "Premiere Pro"],
         },
         "M3": {
-            "release_year": 2023, 
-            "typical_price_range": (8000, 13000), 
+            "release_year": 2023,
+            "typical_price_range": (8000, 13000),
             "video_editing_score": 88,
             "recommended_for": "1080p视频剪辑、轻度4K",
-            "software_support": ["Final Cut Pro", "iMovie"]
+            "software_support": ["Final Cut Pro", "iMovie"],
         },
-        
+
         # M2 系列 (2022-2023)
         "M2 Max": {
-            "release_year": 2023, 
-            "typical_price_range": (13000, 23000), 
+            "release_year": 2023,
+            "typical_price_range": (13000, 23000),
             "video_editing_score": 95,
             "recommended_for": "专业4K视频剪辑",
-            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"],
         },
         "M2 Pro": {
-            "release_year": 2023, 
-            "typical_price_range": (9000, 15000), 
+            "release_year": 2023,
+            "typical_price_range": (9000, 15000),
             "video_editing_score": 90,
             "recommended_for": "4K视频剪辑",
-            "software_support": ["Final Cut Pro", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "Premiere Pro"],
         },
         "M2": {
-            "release_year": 2022, 
-            "typical_price_range": (6500, 11000), 
+            "release_year": 2022,
+            "typical_price_range": (6500, 11000),
             "video_editing_score": 85,
             "recommended_for": "1080p视频剪辑",
-            "software_support": ["Final Cut Pro", "iMovie"]
+            "software_support": ["Final Cut Pro", "iMovie"],
         },
-        
+
         # M1 系列 (2020-2021)
         "M1 Max": {
-            "release_year": 2021, 
-            "typical_price_range": (10000, 18000), 
+            "release_year": 2021,
+            "typical_price_range": (10000, 18000),
             "video_editing_score": 92,
             "recommended_for": "专业4K视频剪辑",
-            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"],
         },
         "M1 Pro": {
-            "release_year": 2021, 
-            "typical_price_range": (7000, 13000), 
+            "release_year": 2021,
+            "typical_price_range": (7000, 13000),
             "video_editing_score": 88,
             "recommended_for": "4K视频剪辑",
-            "software_support": ["Final Cut Pro", "Premiere Pro"]
+            "software_support": ["Final Cut Pro", "Premiere Pro"],
         },
         "M1": {
-            "release_year": 2020, 
-            "typical_price_range": (4500, 8500), 
+            "release_year": 2020,
+            "typical_price_range": (4500, 8500),
             "video_editing_score": 80,
             "recommended_for": "1080p视频剪辑、轻度4K",
-            "software_support": ["Final Cut Pro", "iMovie"]
+            "software_support": ["Final Cut Pro", "iMovie"],
         },
-        
+
         # Intel 系列 (2019-2020) - 性价比选择
         "Intel i9": {
-            "release_year": 2019, 
-            "typical_price_range": (4500, 9500), 
+            "release_year": 2019,
+            "typical_price_range": (4500, 9500),
             "video_editing_score": 70,
             "recommended_for": "1080p视频剪辑（发热较大）",
-            "software_support":
+            "software_support": ["Final Cut Pro", "DaVinci Resolve", "Premiere Pro"],
+        },
+    }
+}
