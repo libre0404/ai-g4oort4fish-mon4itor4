@@ -349,4 +349,3 @@ async def apply_stealth_to_page_async(page):
 if __name__ == "__main__":
     # ===== 同步版本示例 =====
     print("=" * 60)
-    print("Stealth Helper 使
