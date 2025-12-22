@@ -64,4 +64,4 @@ RUN mkdir -p jsonl logs images
 EXPOSE 8000
 
 # 默认入口：直接跑监控脚本（可在 docker-compose 中覆盖）
-CMD ["python", "spider_v2.py"]
+CMD ["python", "web_server.py"]
